@@ -2,15 +2,16 @@
 #include <gauss.h>
 #include <cstdlib>
 
-#define SOLVE(m, v, s) \
+#define SOLVE(m, v) \
     gsl_matrix *matrix; \
     gsl_vector *vector; \
     gsl_vector *result; \
+    size_t size = sizeof(v) / sizeof(double); \
     double det = 0; \
-    gauss_init(s, m, v, &matrix, &vector, &result); \
-    int pass = gauss(s, matrix, vector, result, &det); \
-    gauss_print(3, result); \
-    int check = gauss_check(s, m, v, result); \
+    gauss_init(size, m, v, &matrix, &vector, &result); \
+    int pass = gauss(size, matrix, vector, result, &det); \
+    gauss_print(size, result); \
+    int check = gauss_check(size, m, v, result); \
     gsl_matrix_free(matrix); \
     gsl_vector_free(vector); \
     gsl_vector_free(result);
@@ -24,7 +25,7 @@ TEST(Gauss, Simple3) {
     };
     const double d_vector[] = {8., 3., 71.};
 
-    SOLVE(d_matrix, d_vector, 3);
+    SOLVE(d_matrix, d_vector);
 
     ASSERT_TRUE(pass);
     ASSERT_TRUE(check);
@@ -40,7 +41,7 @@ TEST(Gauss, Simple4) {
     };
     const double d_vector[] = {8., 3., 2., 10.};
 
-    SOLVE(d_matrix, d_vector, 4);
+    SOLVE(d_matrix, d_vector);
 
     ASSERT_TRUE(pass);
     ASSERT_TRUE(check);
@@ -55,7 +56,7 @@ TEST(Gauss, Unsolvable) {
     };
     const double d_vector[] = {3., 3., 1., 7.};
 
-    SOLVE(d_matrix, d_vector, 4);
+    SOLVE(d_matrix, d_vector);
 
     ASSERT_FALSE(pass);
     ASSERT_FALSE(check);
@@ -70,7 +71,7 @@ TEST(Gauss, Unit) {
     };
     const double d_vector[] = {1., 2., 3.};
 
-    SOLVE(d_matrix, d_vector, 3);
+    SOLVE(d_matrix, d_vector);
 
     ASSERT_TRUE(pass);
     ASSERT_TRUE(check);
