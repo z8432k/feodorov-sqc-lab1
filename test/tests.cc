@@ -46,32 +46,6 @@ TEST(Gauss, Simple4) {
     ASSERT_TRUE(check);
 }
 
-TEST(Gauss, Big) {
-    const size_t size = 100;
-
-    srand((unsigned) time(nullptr));
-
-    auto big_matrix = (double *) malloc(sizeof(double) * size * size);
-    auto big_vector = (double *) malloc(sizeof(double) * size);
-
-
-    for (size_t i = 0; i < size * size; i++) {
-        big_matrix[i] = -50 + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX / (50 - -50)));;
-
-        if (i < size) {
-            big_vector[i] = -50 + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX / (50 - -50)));
-        }
-    }
-
-    SOLVE(big_matrix, big_vector, size);
-
-    ASSERT_TRUE(pass);
-    ASSERT_TRUE(check);
-
-    free(big_matrix);
-    free(big_vector);
-}
-
 TEST(Gauss, Unsolvable) {
     const double d_matrix[] = {
             1., 6.,  3., -2.,
