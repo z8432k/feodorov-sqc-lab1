@@ -51,15 +51,15 @@ TEST(Gauss, Big) {
 
     srand((unsigned) time(nullptr));
 
-    double *big_matrix = (double *) malloc(sizeof(double) * size * size);
-    double *big_vector = (double *) malloc(sizeof(double) * size);
+    auto big_matrix = (double *) malloc(sizeof(double) * size * size);
+    auto big_vector = (double *) malloc(sizeof(double) * size);
 
 
     for (size_t i = 0; i < size * size; i++) {
-        big_matrix[i] = -50 + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(50 - -50)));;
+        big_matrix[i] = -50 + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX / (50 - -50)));;
 
         if (i < size) {
-            big_vector[i] = -50 + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(50 - -50)));
+            big_vector[i] = -50 + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX / (50 - -50)));
         }
     }
 
