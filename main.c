@@ -1,5 +1,7 @@
 #include <gauss.h>
 
+#define MATRIX_SIZE 3
+
 static double d_matrix[MATRIX_SIZE * MATRIX_SIZE] = {
     1., 4., 2.1,
     -1., -2., 1.,
@@ -14,13 +16,13 @@ int main(void) {
 
     double det = 0;
 
-    gauss_init(d_matrix, d_vector, &matrix, &vector, &result);
+    gauss_init(MATRIX_SIZE, d_matrix, d_vector, &matrix, &vector, &result);
 
-    gauss(matrix, vector, result, &det);
+    gauss(MATRIX_SIZE, matrix, vector, result, &det);
 
-    gauss_print(result);
+    gauss_print(MATRIX_SIZE, result);
 
-    int check = gauss_check(d_matrix, d_vector, result);
+    int check = gauss_check(MATRIX_SIZE, d_matrix, d_vector, result);
 
     if (!check) {
         fprintf(stderr, "No decision.\n");

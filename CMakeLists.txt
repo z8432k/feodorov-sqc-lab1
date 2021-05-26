@@ -25,11 +25,11 @@ endif()
 
 include_directories("include")
 
-# add_subdirectory(test)
-
 find_package(GSL REQUIRED)
 
 add_library(gauss gauss.c)
 
 add_executable(lab1 main.c)
 target_link_libraries(lab1 GSL::gsl gauss)
+
+add_subdirectory(test)

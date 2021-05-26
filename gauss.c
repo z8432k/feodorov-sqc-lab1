@@ -1,38 +1,38 @@
 #include <gauss.h>
 
-void gauss_init(double *d_matrix, double *d_vector, gsl_matrix **matrix, gsl_vector **vector, gsl_vector **result) {
-    *matrix = gsl_matrix_alloc(MATRIX_SIZE, MATRIX_SIZE);
-    *vector = gsl_vector_alloc(MATRIX_SIZE);
-    *result = gsl_vector_alloc(MATRIX_SIZE);
+void gauss_init(size_t size, double *d_matrix, double *d_vector, gsl_matrix **matrix, gsl_vector **vector, gsl_vector **result) {
+    *matrix = gsl_matrix_alloc(size, size);
+    *vector = gsl_vector_alloc(size);
+    *result = gsl_vector_alloc(size);
 
     // Init matrix
-    for (size_t i = 0; i < MATRIX_SIZE; i++) {
-        for (size_t j = 0; j < MATRIX_SIZE; j++) {
+    for (size_t i = 0; i < size; i++) {
+        for (size_t j = 0; j < size; j++) {
             gsl_matrix_set(*matrix, i, j, d_matrix[i*j]);
         }
     }
 
     // Init vector
-    for (size_t j = 0; j < MATRIX_SIZE; j++) {
+    for (size_t j = 0; j < size; j++) {
         gsl_vector_set(*vector, j, d_vector[j]);
     }
 }
 
-void gauss_print(gsl_vector *result) {
+void gauss_print(size_t size, gsl_vector *result) {
     printf("Result:\n");
 
-    for (size_t i = 0; i < MATRIX_SIZE; i++) {
+    for (size_t i = 0; i < size; i++) {
         printf("%zu - %f\n", i, gsl_vector_get(result, i));
     }
 }
 
-int gauss_check(const double *d_matrix, double *d_vector, gsl_vector *result) {
+int gauss_check(size_t size, const double *d_matrix, double *d_vector, gsl_vector *result) {
     printf("\nCheck:\n");
 
-    for (size_t row = 0; row < MATRIX_SIZE; row++) {
+    for (size_t row = 0; row < size; row++) {
         double sum = 0;
 
-        for (size_t col = 0; col < MATRIX_SIZE; col++) {
+        for (size_t col = 0; col < size; col++) {
           sum += d_matrix[row * col] * gsl_vector_get(result, col);
         }
 
@@ -50,23 +50,23 @@ int gauss_check(const double *d_matrix, double *d_vector, gsl_vector *result) {
     return 0;
 }
 
-int gauss(gsl_matrix *matrix, gsl_vector *vector, gsl_vector *result, double *det) {
+int gauss(size_t size, gsl_matrix *matrix, gsl_vector *vector, gsl_vector *result, double *det) {
     // Gauss
 
     // Forward
 
     // Steps by equations
     size_t swap_counter = 0;
-    for (size_t step = 0; step < MATRIX_SIZE - 1; step++) {
+    for (size_t step = 0; step < size - 1; step++) {
 
 
         // Walk by matrix rows
-        for (size_t eq_idx = step + 1; eq_idx < MATRIX_SIZE; eq_idx++) {
+        for (size_t eq_idx = step + 1; eq_idx < size; eq_idx++) {
             // Multiplier
 
             {
                 // Get vector column from submatrix
-                size_t subcol_size = MATRIX_SIZE - eq_idx;
+                size_t subcol_size = size - eq_idx;
                 gsl_vector_view subcol = gsl_matrix_subcolumn(matrix, eq_idx, eq_idx, subcol_size);
 
                 // Find max idx
@@ -102,7 +102,7 @@ int gauss(gsl_matrix *matrix, gsl_vector *vector, gsl_vector *result, double *de
             gsl_vector_set(vector, eq_idx, vector_val);
 
             // Walk by eq cells
-            for (size_t col = step + 1; col < MATRIX_SIZE; col++) {
+            for (size_t col = step + 1; col < size; col++) {
                 double cell_val = gsl_matrix_get(matrix, eq_idx, col) - multiplier * gsl_matrix_get(matrix, step, col);
 
                 gsl_matrix_set(matrix, eq_idx, col, cell_val);
@@ -115,7 +115,7 @@ int gauss(gsl_matrix *matrix, gsl_vector *vector, gsl_vector *result, double *de
     // det
 
     *det = 1;
-    for (size_t i = 0; i < MATRIX_SIZE; i++) {
+    for (size_t i = 0; i < size; i++) {
         *det *= gsl_matrix_get(matrix, i, i);
     }
     if (swap_counter % 2 != 0) {
@@ -129,10 +129,10 @@ int gauss(gsl_matrix *matrix, gsl_vector *vector, gsl_vector *result, double *de
 
     // Back
 
-    for (ssize_t eq_idx = MATRIX_SIZE - 1; eq_idx >= 0; eq_idx--) { //1
+    for (ssize_t eq_idx = (ssize_t) size - 1; eq_idx >= 0; eq_idx--) { //1
         double sum = 0;
 
-        for (size_t col = eq_idx + 1; col <= MATRIX_SIZE - 1; col++) { // 2
+        for (size_t col = eq_idx + 1; col <= size - 1; col++) { // 2
             sum += gsl_matrix_get(matrix, eq_idx, col) * gsl_vector_get(result, col);
         }
 
