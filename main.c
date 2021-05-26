@@ -20,13 +20,15 @@ int main(void) {
 
     gauss(MATRIX_SIZE, matrix, vector, result, &det);
 
-    gauss_print(MATRIX_SIZE, result);
-
     int check = gauss_check(MATRIX_SIZE, d_matrix, d_vector, result);
 
     if (!check) {
         fprintf(stderr, "No decision.\n");
     }
+
+    printf("\n");
+    gauss_print(MATRIX_SIZE, result);
+    printf("\nDet: %f\n", det);
 
     gsl_matrix_free(matrix);
     gsl_vector_free(vector);
