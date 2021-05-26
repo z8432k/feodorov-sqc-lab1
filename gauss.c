@@ -1,6 +1,8 @@
 #include <gauss.h>
+#include <math.h>
 
-void gauss_init(size_t size, double *d_matrix, double *d_vector, gsl_matrix **matrix, gsl_vector **vector, gsl_vector **result) {
+
+void gauss_init(const size_t size, const double *d_matrix, const double *d_vector, gsl_matrix **matrix, gsl_vector **vector, gsl_vector **result) {
     *matrix = gsl_matrix_alloc(size, size);
     *vector = gsl_vector_alloc(size);
     *result = gsl_vector_alloc(size);
@@ -8,7 +10,7 @@ void gauss_init(size_t size, double *d_matrix, double *d_vector, gsl_matrix **ma
     // Init matrix
     for (size_t i = 0; i < size; i++) {
         for (size_t j = 0; j < size; j++) {
-            gsl_matrix_set(*matrix, i, j, d_matrix[i*j]);
+            gsl_matrix_set(*matrix, i, j, d_matrix[i * size + j]);
         }
     }
 
@@ -26,14 +28,14 @@ void gauss_print(size_t size, gsl_vector *result) {
     }
 }
 
-int gauss_check(size_t size, const double *d_matrix, double *d_vector, gsl_vector *result) {
+int gauss_check(const size_t size, const double *d_matrix, const double *d_vector, gsl_vector *result) {
     printf("\nCheck:\n");
 
     for (size_t row = 0; row < size; row++) {
         double sum = 0;
 
         for (size_t col = 0; col < size; col++) {
-          sum += d_matrix[row * col] * gsl_vector_get(result, col);
+          sum += d_matrix[row * size + col] * gsl_vector_get(result, col);
         }
 
         if (fabs(d_vector[row] - sum) > EPSILON) {
@@ -46,11 +48,12 @@ int gauss_check(size_t size, const double *d_matrix, double *d_vector, gsl_vecto
     return 1;
 
     err:
+    printf("\t fail.\n");
 
     return 0;
 }
 
-int gauss(size_t size, gsl_matrix *matrix, gsl_vector *vector, gsl_vector *result, double *det) {
+int gauss(const size_t size, gsl_matrix *matrix, gsl_vector *vector, gsl_vector *result, double *det) {
     // Gauss
 
     // Forward
